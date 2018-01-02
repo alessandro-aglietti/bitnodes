@@ -15,6 +15,7 @@ from protocol import (
 CONF = {
     'user_agent': '/bitnodes.earn.com:0.1/',
     'logfile': 'log/testnet-node-status.log',
+    # see Know magic values https://en.bitcoin.it/wiki/Protocol_documentation#Message_structure
     'testnet3_magicnumber': unhexlify("0b110907")
 }
 
@@ -45,6 +46,9 @@ def main(argv):
         conn.open()
         handshake_msgs = conn.handshake()
         logging.debug("handshake_msgs {}".format(handshake_msgs))
+
+        logging.debug("ULTIMO BLOCCO RILEVATO https://www.blocktrail.com/tBTC/block/{}".format(handshake_msgs[0]['height']))
+        logging.debug("VERSIONE {} {}".format(handshake_msgs[0]['user_agent'], handshake_msgs[0]['version']))
 
         addr_msgs = conn.getaddr()
         logging.debug("addr_msgs {}".format(addr_msgs))
