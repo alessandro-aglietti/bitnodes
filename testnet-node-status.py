@@ -4,6 +4,7 @@
 import logging
 import socket
 import sys
+from binascii import unhexlify
 
 from protocol import (
     Connection,
@@ -13,7 +14,8 @@ from protocol import (
 
 CONF = {
     'user_agent': '/bitnodes.earn.com:0.1/',
-    'logfile': 'log/testnet-node-status.log'
+    'logfile': 'log/testnet-node-status.log',
+    'testnet3_magicnumber': unhexlify("0b110907")
 }
 
 
@@ -35,13 +37,17 @@ def main(argv):
     to_address = (address, int(port))
     conn = Connection(
         to_addr=to_address,
-        user_agent=CONF['user_agent']
+        user_agent=CONF['user_agent'],
+        magic_number=CONF['testnet3_magicnumber'],
     )
     try:
         logging.debug("Connecting to %s", conn.to_addr)
         conn.open()
         handshake_msgs = conn.handshake()
-        logging.debug("handshake_msgs {}", handshake_msgs)
+        logging.debug("handshake_msgs {}".format(handshake_msgs))
+
+        addr_msgs = conn.getaddr()
+        logging.debug("addr_msgs {}".format(addr_msgs))
 
     except (ProtocolError, ConnectionError, socket.error) as err:
         logging.error("%s: %s", conn.to_addr, err)
