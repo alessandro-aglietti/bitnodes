@@ -16,7 +16,8 @@ CONF = {
     'user_agent': '/bitnodes.earn.com:0.1/',
     'logfile': 'log/testnet-node-status.log',
     # see Know magic values https://en.bitcoin.it/wiki/Protocol_documentation#Message_structure
-    'testnet3_magicnumber': unhexlify("0b110907")
+    'testnet3_magicnumber': unhexlify("0b110907"),
+    'socket_timeout': 30
 }
 
 
@@ -39,6 +40,7 @@ def main(argv):
     conn = Connection(
         to_addr=to_address,
         user_agent=CONF['user_agent'],
+        socket_timeout=CONF['socket_timeout'],
         magic_number=CONF['testnet3_magicnumber'],
     )
     try:
@@ -47,7 +49,8 @@ def main(argv):
         handshake_msgs = conn.handshake()
         logging.debug("handshake_msgs {}".format(handshake_msgs))
 
-        logging.debug("ULTIMO BLOCCO RILEVATO https://www.blocktrail.com/tBTC/block/{}".format(handshake_msgs[0]['height']))
+        logging.debug(
+            "ULTIMO BLOCCO RILEVATO https://www.blocktrail.com/tBTC/block/{}".format(handshake_msgs[0]['height']))
         logging.debug("VERSIONE {} {}".format(handshake_msgs[0]['user_agent'], handshake_msgs[0]['version']))
 
         addr_msgs = conn.getaddr()
